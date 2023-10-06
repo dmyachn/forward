@@ -16,7 +16,7 @@ struct ContentView: View {
             withAnimation(.interpolatingSpring(stiffness: 150, damping: 15, initialVelocity: 2)) {
                 isAnimationOn = false
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 isAnimationOn = true
             }
         } label: {
