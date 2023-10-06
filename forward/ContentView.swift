@@ -8,43 +8,56 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var array: [AnyView] = [
-        AnyView(Image(systemName: "play")
-            .resizable()
-            .transition(
-                .asymmetric(insertion: .move(edge: .leading).combined(with: .scale),
-                                    removal: .move(edge: .trailing).combined(with: .scale)))
-        ),
-
-        AnyView(Image(systemName: "play")
-            .resizable()
-            .foregroundColor(.yellow)
-            .transition(
-                .asymmetric(insertion: .move(edge: .leading).combined(with: .scale),
-                                    removal: .move(edge: .trailing).combined(with: .scale)))
-        ),
-        
-        AnyView(Image(systemName: "play.fill")
-            .resizable()
-            .foregroundColor(.yellow)
-            .transition(
-                .asymmetric(insertion: .move(edge: .leading).combined(with: .scale),
-                                    removal: .move(edge: .trailing).combined(with: .scale)))
-        )
-    ]
-    
+    @Namespace var animation
+    @State var isAnimationOn = true
+    @State var count = 0
     var body: some View {
         Button {
-            withAnimation(.easeInOut){
-            let view = array.remove(at: 1)
-            array.insert(view , at: 0)
+            withAnimation(.interpolatingSpring(stiffness: 150, damping: 15, initialVelocity: 2)) {
+                isAnimationOn = false
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isAnimationOn = true
             }
         } label: {
-            HStack(spacing: 0){
-                ForEach(0..<2) {
-                    array[$0]
-                }.animation(.easeInOut, value: 10)
-            }.frame(width: 50, height: 30)
+            HStack(spacing: 5){
+                if isAnimationOn{
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "zero", in: animation)
+                        .frame(width: 0, height: 0)
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "first", in: animation)
+                        .frame(width: 25, height: 30)
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "second", in: animation)
+                        .frame(width: 25, height: 30)
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "third", in: animation)
+                        .frame(width: 0, height: 0)
+                }
+                else{
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "third", in: animation)
+                        .frame(width: 0, height: 0)
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "zero", in: animation)
+                        .frame(width: 25, height: 30)
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "first", in: animation)
+                        .frame(width: 25, height: 30)
+                    Image(systemName: "play.fill")
+                        .resizable()
+                        .matchedGeometryEffect(id: "second", in: animation)
+                        .frame(width: 0, height: 0)
+                }
+            }
         }
     }
 }
