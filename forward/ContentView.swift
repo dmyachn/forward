@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SmallRoundButton: PrimitiveButtonStyle {
+struct SmallRoundButton: ButtonStyle {
     @State var isAnimationSmallOn = false
     var scale: Double = 0.86
     var duration: Double = 0.22
@@ -20,19 +20,17 @@ struct SmallRoundButton: PrimitiveButtonStyle {
                             .opacity(isAnimationSmallOn ? 0.7 : 0)
                             .frame(width: 180, height: 180)
                 )
-                .gesture(
-                    TapGesture()
-                        .onEnded { _ in
-                            withAnimation(.easeInOut(duration: duration)) {
-                                isAnimationSmallOn = true
-                            } completion: {
-                                withAnimation(.easeInOut) {
-                                    isAnimationSmallOn = false
-                                }
+                .onChange(of: configuration.isPressed, initial: false){ oldState, newState  in
+                    if newState {
+                        withAnimation(.easeInOut(duration: duration)) {
+                            isAnimationSmallOn = newState
+                        } completion: {
+                            withAnimation(.easeInOut) {
+                                isAnimationSmallOn = false
                             }
-                            configuration.trigger()
                         }
-            )
+                    }
+                }
                 .scaleEffect(isAnimationSmallOn ? scale : 1.0)
     }
 }
