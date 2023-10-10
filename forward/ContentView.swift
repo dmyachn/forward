@@ -7,23 +7,10 @@
 
 import SwiftUI
 
-struct SmallRoundButton: ButtonStyle {
-    
-    func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .background(
-                        Circle()
-                            .foregroundColor(.yellow)
-                            .opacity(configuration.isPressed ? 0.7 : 0)
-                            .frame(width: 180, height: 180)
-                )
-                .scaleEffect(configuration.isPressed ? 0.5 : 1.0)
-                .animation(.easeOut(duration: 0.22), value: configuration.isPressed)
-    }
-}
-
-struct RightSmallRoundButton: PrimitiveButtonStyle {
+struct SmallRoundButton: PrimitiveButtonStyle {
     @State var isAnimationSmallOn = false
+    var scale: Double = 0.86
+    var duration: Double = 0.22
     
     func makeBody(configuration: Configuration) -> some View {
             configuration.label
@@ -36,35 +23,17 @@ struct RightSmallRoundButton: PrimitiveButtonStyle {
                 .gesture(
                     TapGesture()
                         .onEnded { _ in
-                            configuration.trigger()
-                            withAnimation(.easeInOut(duration: 0.2)) {
+                            withAnimation(.easeInOut(duration: duration)) {
                                 isAnimationSmallOn = true
                             } completion: {
                                 withAnimation(.easeInOut) {
                                     isAnimationSmallOn = false
                                 }
                             }
+                            configuration.trigger()
                         }
-                        .simultaneously(with:
-                    LongPressGesture()
-                            .onEnded { _ in
-                                configuration.trigger()
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    isAnimationSmallOn = true
-                                } completion: {
-                                    withAnimation(.easeInOut) {
-                                        isAnimationSmallOn = false
-                                    }
-                                }
-                                
-                            }
-                            .onChanged({ value in
-                                withAnimation(.easeInOut(duration: 0.1)) {
-                                    isAnimationSmallOn = value
-                                }
-                            }))
             )
-                .scaleEffect(isAnimationSmallOn ? 0.6 : 1.0)
+                .scaleEffect(isAnimationSmallOn ? scale : 1.0)
     }
 }
 
@@ -73,10 +42,10 @@ struct ContentView: View {
         HStack{
             Spacer()
             ForvardButton()
-                .buttonStyle(SmallRoundButton())
+                .buttonStyle(SmallRoundButton(scale: 0, duration: 1.2))
             Spacer()
             ForvardButton()
-                .buttonStyle(RightSmallRoundButton())
+                .buttonStyle(SmallRoundButton())
             Spacer()
         }
     }
